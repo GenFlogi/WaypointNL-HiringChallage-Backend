@@ -29,12 +29,8 @@ public class DataGenerator {
 
     private Double generateRandomDouble() {
         Random r = new Random();
-        Double decimal = null;
-        /*while(decimal == null || decimal%4 != 0) {
-            decimal = r.nextDouble(100)+1;
-        }*/
-        decimal = r.nextDouble(100) + 1;
-        return decimal;
+        Double decimal = r.nextDouble(100) + 1;
+        return roundToDecimals(decimal, 4);
     }
 
     private Double divideBySmaller(Double a, Double b) {
@@ -43,6 +39,15 @@ public class DataGenerator {
         } else {
             return b / a;
         }
+    }
+
+    private Double roundToDecimals(Double value, Integer places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 
     private String generateMD5Hash(String input) throws NoSuchAlgorithmException {
@@ -62,17 +67,15 @@ public class DataGenerator {
         Double a = generateRandomDouble();
         Double b = generateRandomDouble();
         Double c = divideBySmaller(a, b);
-        Double roundedDecimal = Math.round(c * 100.0) / 100.0;
+        Double roundedDecimal = roundToDecimals(c, 2);
         StringBuilder calculationResult = new StringBuilder();
-        calculationResult.append(a);
+        calculationResult.append(String.format("%.4f", a));
         calculationResult.append(" / ");
-        calculationResult.append(b);
+        calculationResult.append(String.format("%.4f", b));
         calculationResult.append(" = ");
-        calculationResult.append(roundedDecimal);
-        calculationResult.append(" (");
+        calculationResult.append(String.format("%.2f", roundedDecimal));
+
         String hash = generateMD5Hash(uuid + currentDateTime + roundedDecimal);
-        calculationResult.append(hash);
-        calculationResult.append(")");
         return new Container(uuid, currentDateTime, roundedDecimal, calculationResult, hash);
     }
 
