@@ -1,15 +1,13 @@
 package nl.waypoint.brombauer.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Container implements Serializable {
+public class Container {
 
     private String uuid;
     private String currentDateTime;

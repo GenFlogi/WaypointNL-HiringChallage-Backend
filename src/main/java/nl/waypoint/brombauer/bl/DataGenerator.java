@@ -61,13 +61,14 @@ public class DataGenerator {
         return hashtext.toString();
     }
 
-    public Container generateContainer() throws NoSuchAlgorithmException {
-        String uuid = generateUUID();
-        String currentDateTime = generateCurrentDateTime();
-        Double a = generateRandomDouble();
-        Double b = generateRandomDouble();
-        Double c = divideBySmaller(a, b);
-        Double roundedDecimal = roundToDecimals(c, 2);
+    public static Container generateContainer() throws NoSuchAlgorithmException {
+        DataGenerator dataGenerator = new DataGenerator();
+        String uuid = dataGenerator.generateUUID();
+        String currentDateTime = dataGenerator.generateCurrentDateTime();
+        Double a = dataGenerator.generateRandomDouble();
+        Double b = dataGenerator.generateRandomDouble();
+        Double c = dataGenerator.divideBySmaller(a, b);
+        Double roundedDecimal = dataGenerator.roundToDecimals(c, 2);
         StringBuilder calculationResult = new StringBuilder();
         calculationResult.append(String.format("%.4f", a));
         calculationResult.append(" / ");
@@ -75,7 +76,7 @@ public class DataGenerator {
         calculationResult.append(" = ");
         calculationResult.append(String.format("%.2f", roundedDecimal));
 
-        String hash = generateMD5Hash(uuid + currentDateTime + roundedDecimal);
+        String hash = dataGenerator.generateMD5Hash(uuid + currentDateTime + roundedDecimal);
         return new Container(uuid, currentDateTime, roundedDecimal, calculationResult, hash);
     }
 
@@ -88,7 +89,7 @@ public class DataGenerator {
     }
 
     public static void generateAndWriteToJsonFile(Path path) throws IOException, NoSuchAlgorithmException {
-        Container container = new DataGenerator().generateContainer();
+        Container container = DataGenerator.generateContainer();
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             ObjectMapper mapper = new ObjectMapper();
             writer.write(mapper.writeValueAsString(container));
